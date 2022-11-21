@@ -3,6 +3,7 @@ package top.windope.seatastudy.task;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionManager;
 import top.windope.seatastudy.dto.OrderDTO;
 import top.windope.seatastudy.service.OrderService;
 
@@ -15,6 +16,8 @@ public class OrderCreateTask {
 
     @Resource
     private OrderService orderService;
+    @Resource
+    private TransactionManager transactionManager;
 
     @Scheduled(fixedDelay = 10000)
     public void run() {
@@ -24,6 +27,8 @@ public class OrderCreateTask {
         orderDTO.setProductName("MP4");
         orderDTO.setPrice(BigDecimal.TEN);
         orderService.save(orderDTO);
+
+        log.info("Current record size: {} with transaction manager {}", orderService.findAll().size(), transactionManager.getClass());
     }
 
 }

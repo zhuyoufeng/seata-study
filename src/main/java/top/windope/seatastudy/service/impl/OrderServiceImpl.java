@@ -9,8 +9,10 @@ import top.windope.seatastudy.repository.OrderRepository;
 import top.windope.seatastudy.service.OrderService;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
-//@Transactional(readOnly = true)
+@Transactional(readOnly = true)
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -23,6 +25,18 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity orderEntity = new OrderEntity();
         BeanUtils.copyProperties(orderDTO, orderEntity);
         orderRepository.save(orderEntity);
+    }
+
+    @Override
+    public List<OrderDTO> findAll() {
+        return orderRepository.findAll()
+                .stream()
+                .map(orderEntity -> {
+                    OrderDTO orderDTO = new OrderDTO();
+                    BeanUtils.copyProperties(orderEntity, orderDTO);
+                    return orderDTO;
+                })
+                .collect(Collectors.toList());
     }
 
 }
